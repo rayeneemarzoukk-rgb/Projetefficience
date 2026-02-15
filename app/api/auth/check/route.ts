@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { jwtVerify } from 'jose'
 
+export const dynamic = 'force-dynamic'
+
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'efficience-jwt-secret-key-2026-production-secure'
 )
@@ -9,7 +11,7 @@ const JWT_SECRET = new TextEncoder().encode(
 export async function GET(request: NextRequest) {
   try {
     const token = request.cookies.get('auth_token')?.value
-
+    
     if (!token) {
       return NextResponse.json({ 
         authenticated: false, 

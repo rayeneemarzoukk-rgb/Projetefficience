@@ -45,8 +45,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
   const [isServerOnline, setIsServerOnline] = useState(false)
 
-  const API_URL = "http://127.0.0.1:5001/api";
-
   // --- ACTION : LIRE (GET) depuis MongoDB via l'API Next.js ---
   const refreshData = useCallback(async () => {
     try {
@@ -87,14 +85,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // --- ACTION : AJOUTER (POST) ---
   const addPatient = async (patientData: any) => {
     try {
-      // Génère un ID unique basé sur le timestamp
-      const newId = Date.now().toString()
-      const patientWithId = { ...patientData, id: newId }
-      
-      const res = await fetch(`${API_URL}/add-patient`, {
+      const res = await fetch('/api/patients', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(patientWithId)
+        body: JSON.stringify(patientData)
       })
       if (res.ok) await refreshData()
     } catch (err) {
@@ -104,15 +98,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // --- ACTION : SUPPRIMER (DELETE) ---
   const deletePatient = async (id: string | number) => {
-    // Valider l'ID avant d'envoyer la requête
-    if (!id || id === undefined || id === null || id === 'undefined') {
-      console.error("❌ ID invalide pour la suppression:", id);
-      return;
-    }
+    if (!id) return;
     
     if (!window.confirm("❗ Confirmer la suppression définitive de ce patient ?")) return;
     try {
-      const res = await fetch(`${API_URL}/delete-patient/${id}`, {
+      const res = await fetch(`/api/patients/${id}`, {
         method: 'DELETE'
       })
       if (res.ok) {
@@ -126,7 +116,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // --- ACTION : MODIFIER (PUT) ---
   const updatePatient = async (id: string | number, updatedData: any) => {
     try {
-      const res = await fetch(`${API_URL}/update-patient/${id}`, {
+      const res = await fetch(`/api/patients/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData)

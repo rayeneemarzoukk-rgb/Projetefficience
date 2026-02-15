@@ -2,6 +2,8 @@ import { type NextRequest, NextResponse } from "next/server"
 import { MongoClient } from "mongodb"
 import { comparePassword } from "@/lib/auth-utils"
 
+export const dynamic = 'force-dynamic'
+
 const MONGODB_URI = process.env.MONGODB_URI || ''
 const DB_NAME = process.env.MONGODB_DB || 'rayan_dev2'
 

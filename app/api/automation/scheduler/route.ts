@@ -581,6 +581,8 @@ class AutomationScheduler {
 // Instance globale du scheduler
 const scheduler = new AutomationScheduler()
 
+export const dynamic = 'force-dynamic'
+
 // API Routes pour contrôler l'automatisation
 export async function POST(request: NextRequest) {
   try {
@@ -693,7 +695,11 @@ export async function GET() {
   }
 }
 
-// Démarrer automatiquement toutes les tâches au lancement
-if (process.env.NODE_ENV === "production") {
-  scheduler.startAllJobs()
+// Démarrer automatiquement toutes les tâches au lancement (uniquement hors build)
+if (process.env.NODE_ENV === "production" && process.env.NEXT_RUNTIME === "nodejs" && !process.env.NEXT_PHASE) {
+  try {
+    // scheduler.startAllJobs()
+  } catch (e) {
+    console.error("Erreur lors du démarrage automatique du scheduler:", e)
+  }
 }

@@ -80,7 +80,7 @@ export function ChatWidget() {
     setIsLoading(true)
 
     try {
-      const response = await fetch("http://127.0.0.1:5001/api/chat", {
+      const response = await fetch("/api/chatbot/conversation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text }),
@@ -94,7 +94,7 @@ export function ChatWidget() {
       }
       setMessages((prev) => [...prev, botMessage])
     } catch (error) {
-      setMessages((prev) => [...prev, { id: "err", type: "bot", content: "⚠️ Erreur de connexion au serveur Flask.", timestamp: new Date() }])
+      setMessages((prev) => [...prev, { id: "err", type: "bot", content: "⚠️ Erreur de connexion au chatbot.", timestamp: new Date() }])
     } finally {
       setIsLoading(false)
     }

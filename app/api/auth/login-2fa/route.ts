@@ -3,6 +3,8 @@ import { MongoClient } from "mongodb"
 import { comparePassword, generateToken } from "@/lib/auth-utils"
 import { generateVerificationCode, sendOTPEmail } from "@/lib/email-service"
 
+export const dynamic = 'force-dynamic'
+
 const MONGODB_URI = process.env.MONGODB_URI || ''
 const DB_NAME = process.env.MONGODB_DB || 'rayan_dev2'
 
