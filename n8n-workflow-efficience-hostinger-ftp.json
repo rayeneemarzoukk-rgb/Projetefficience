@@ -1,0 +1,361 @@
+{
+  "name": "Efficience - Hostinger FTP Auto Import",
+  "description": "Workflow complet pour importer automatiquement les fichiers CSV/Excel depuis Hostinger FTP vers Efficience",
+  "version": 1,
+  "active": false,
+  "nodes": [
+    {
+      "name": "Schedule Trigger",
+      "description": "Déclenche le workflow toutes les 5 minutes",
+      "type": "n8n-nodes-base.interval",
+      "typeVersion": 1,
+      "position": [100, 300],
+      "parameters": {
+        "interval": [
+          5,
+          "minutes"
+        ]
+      }
+    },
+    {
+      "name": "FTP - List Files",
+      "description": "Liste les fichiers dans le dossier /data/ sur Hostinger",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [300, 300],
+      "credentials": {
+        "ftpApi": "Hostinger FTP"
+      },
+      "parameters": {
+        "operation": "list",
+        "path": "/data",
+        "options": {
+          "recurse": false
+        }
+      }
+    },
+    {
+      "name": "Filter CSV/Excel Files",
+      "description": "Filtre pour garder seulement les fichiers CSV et Excel",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 1,
+      "position": [500, 300],
+      "parameters": {
+        "conditions": {
+          "nodeVersion": 2,
+          "conditionType": "query",
+          "value": "filterType",
+          "parameters": {
+            "mode": "raw",
+            "value": "=name.match(/\\.(csv|xlsx|xls)$/i)"
+          }
+        }
+      }
+    },
+    {
+      "name": "For Each File",
+      "description": "Boucle sur chaque fichier trouvé",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [700, 300],
+      "parameters": {
+        "batchSize": 1
+      }
+    },
+    {
+      "name": "FTP - Read File",
+      "description": "Télécharge le contenu du fichier",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [900, 300],
+      "credentials": {
+        "ftpApi": "Hostinger FTP"
+      },
+      "parameters": {
+        "operation": "download",
+        "path": "/data/{{ $node['FTP - List Files'].json.name }}",
+        "binary": true
+      }
+    },
+    {
+      "name": "Detect File Type",
+      "description": "Détecte le type de fichier (CSV ou Excel)",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1100, 300],
+      "parameters": {
+        "functionCode": "const filename = $node['FTP - List Files'].json.name;\nconst ext = filename.split('.').pop().toLowerCase();\n\nlet fileType = 'csv';\nif (ext === 'xlsx' || ext === 'xls') {\n  fileType = 'excel';\n}\n\nreturn [\n  {\n    filename: filename,\n    fileType: fileType,\n    extension: ext\n  }\n];"
+      }
+    },
+    {
+      "name": "Parse CSV Files",
+      "description": "Parse les fichiers CSV",
+      "type": "n8n-nodes-base.spreadsheet",
+      "typeVersion": 1,
+      "position": [1300, 100],
+      "parameters": {
+        "operation": "fromFile",
+        "fileFormat": "csv",
+        "options": {
+          "delimiter": ",",
+          "encoding": "utf8",
+          "headers": true,
+          "maxRowCount": 10000
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "name": "Parse Excel Files",
+      "description": "Parse les fichiers Excel",
+      "type": "n8n-nodes-base.spreadsheet",
+      "typeVersion": 1,
+      "position": [1300, 500],
+      "parameters": {
+        "operation": "fromFile",
+        "fileFormat": "excel",
+        "options": {
+          "headers": true,
+          "maxRowCount": 10000
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "name": "Validate Data",
+      "description": "Valide les données et détecte le type",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1500, 300],
+      "parameters": {
+        "functionCode": "// Récupérer les données parsées\nlet data = [];\nif ($node['Parse CSV Files'].json) {\n  data = Array.isArray($node['Parse CSV Files'].json) ? $node['Parse CSV Files'].json : [data];\n} else if ($node['Parse Excel Files'].json) {\n  data = Array.isArray($node['Parse Excel Files'].json) ? $node['Parse Excel Files'].json : [data];\n}\n\nconst requiredFields = {\n  patients: ['nom', 'email', 'telephone'],\n  finances: ['cabinetId', 'chiffreAffaires', 'periode'],\n  production: ['praticien', 'heures', 'periode'],\n  rendezvous: ['patientNom', 'date', 'heure']\n};\n\nconst validated = [];\nconst errors = [];\nlet detectedType = 'patients';\n\n// Détecter le type de données\nif (data.length > 0) {\n  const firstRow = data[0];\n  const keys = Object.keys(firstRow).map(k => k.toLowerCase());\n  \n  if (keys.includes('chiffreaffaires') || keys.includes('revenue')) {\n    detectedType = 'finances';\n  } else if (keys.includes('praticien') && keys.includes('heures')) {\n    detectedType = 'production';\n  } else if (keys.includes('patientnom') || keys.includes('patient_name')) {\n    detectedType = 'rendezvous';\n  }\n}\n\n// Valider les données\nfor (const row of data) {\n  const required = requiredFields[detectedType] || [];\n  const rowKeys = Object.keys(row).map(k => k.toLowerCase());\n  const missing = required.filter(field => !rowKeys.includes(field.toLowerCase()));\n  \n  if (missing.length > 0) {\n    errors.push({\n      row: row,\n      missingFields: missing,\n      reason: `Missing fields: ${missing.join(', ')}`\n    });\n  } else {\n    validated.push(row);\n  }\n}\n\nreturn [\n  {\n    dataType: detectedType,\n    validated: validated,\n    errors: errors,\n    totalRows: data.length,\n    validRows: validated.length,\n    errorCount: errors.length,\n    validationStatus: errors.length === 0 ? 'PASS' : 'FAIL_WITH_SOME_ERRORS'\n  }\n];"
+      }
+    },
+    {
+      "name": "Transform Data",
+      "description": "Transforme les données au format attendu",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1700, 300],
+      "parameters": {
+        "functionCode": "const validationResult = $node['Validate Data'].json;\nconst dataType = validationResult.dataType;\nconst rawData = validationResult.validated;\n\nconst transformed = [];\n\nfor (const row of rawData) {\n  // Normaliser les clés (lowercase)\n  const normalizedRow = {};\n  for (const [key, value] of Object.entries(row)) {\n    normalizedRow[key.toLowerCase()] = value;\n  }\n\n  if (dataType === 'patients') {\n    transformed.push({\n      nom: normalizedRow.nom?.toString().trim(),\n      prenom: normalizedRow.prenom?.toString().trim() || '',\n      email: normalizedRow.email?.toString().toLowerCase().trim(),\n      telephone: normalizedRow.telephone?.toString().replace(/\\s/g, ''),\n      dateNaissance: normalizedRow.datenaissance || null,\n      source: 'hostinger-ftp'\n    });\n  } else if (dataType === 'finances') {\n    transformed.push({\n      cabinetId: normalizedRow.cabinetid?.toString(),\n      periode: normalizedRow.periode?.toString(),\n      chiffreAffaires: parseFloat(normalizedRow.chiffreaffaires || 0),\n      revenus: parseFloat(normalizedRow.revenus || 0),\n      depenses: parseFloat(normalizedRow.depenses || 0),\n      source: 'hostinger-ftp'\n    });\n  } else if (dataType === 'production') {\n    transformed.push({\n      cabinetId: normalizedRow.cabinetid?.toString() || '1',\n      praticien: normalizedRow.praticien?.toString().trim(),\n      periode: normalizedRow.periode?.toString(),\n      heures: parseFloat(normalizedRow.heures || 0),\n      actes: parseInt(normalizedRow.actes || 0),\n      revenus: parseFloat(normalizedRow.revenus || 0),\n      source: 'hostinger-ftp'\n    });\n  } else if (dataType === 'rendezvous') {\n    transformed.push({\n      cabinetId: normalizedRow.cabinetid?.toString() || '1',\n      patientNom: normalizedRow.patientnom?.toString().trim(),\n      date: new Date(normalizedRow.date).toISOString(),\n      heure: normalizedRow.heure?.toString(),\n      type: normalizedRow.type?.toString().trim() || 'CONTRÔLE',\n      status: normalizedRow.status?.toString().trim() || 'PLANIFIE',\n      source: 'hostinger-ftp'\n    });\n  }\n}\n\nreturn [\n  {\n    type: dataType,\n    data: transformed,\n    count: transformed.length,\n    timestamp: new Date().toISOString()\n  }\n];"
+      }
+    },
+    {
+      "name": "Send to Efficience",
+      "description": "Envoie les données au webhook Efficience",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1900, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:3000/api/admin/webhook-n8n",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer MonSuperTokenSecret2026!"
+            },
+            {
+              "name": "X-N8N-Source",
+              "value": "Hostinger FTP"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParametersUi": "json",
+        "jsonBody": "={{ JSON.stringify({ type: $node['Transform Data'].json.type, cabinetId: '1', data: $node['Transform Data'].json.data, timestamp: new Date().toISOString(), source: 'hostinger-ftp' }) }}",
+        "options": {
+          "redirects": true,
+          "ignoreResponseCode": false,
+          "timeout": 30
+        }
+      }
+    },
+    {
+      "name": "Handle Response",
+      "description": "Traite la réponse du webhook",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [2100, 300],
+      "parameters": {
+        "functionCode": "const response = $node['Send to Efficience'].json;\nconst transformData = $node['Transform Data'].json;\n\nreturn [\n  {\n    success: true,\n    message: `${transformData.count} ${transformData.type} imported successfully`,\n    type: transformData.type,\n    count: transformData.count,\n    timestamp: transformData.timestamp,\n    efficience_response: response\n  }\n];"
+      }
+    },
+    {
+      "name": "Archive File",
+      "description": "Archive le fichier après traitement",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [2300, 300],
+      "credentials": {
+        "ftpApi": "Hostinger FTP"
+      },
+      "parameters": {
+        "operation": "rename",
+        "path": "/data/{{ $node['Detect File Type'].json.filename }}",
+        "newPath": "/data/archive/{{ $node['Detect File Type'].json.filename }}_{{ $now.toFormat('yyyyMMdd_HHmmss') }}"
+      },
+      "onError": "continueErrorOutput"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "FTP - List Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP - List Files": {
+      "main": [
+        [
+          {
+            "node": "Filter CSV/Excel Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter CSV/Excel Files": {
+      "main": [
+        [
+          {
+            "node": "For Each File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "For Each File": {
+      "main": [
+        [
+          {
+            "node": "FTP - Read File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP - Read File": {
+      "main": [
+        [
+          {
+            "node": "Detect File Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detect File Type": {
+      "main": [
+        [
+          {
+            "node": "Parse CSV Files",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Parse Excel Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse CSV Files": {
+      "main": [
+        [
+          {
+            "node": "Validate Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Excel Files": {
+      "main": [
+        [
+          {
+            "node": "Validate Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Data": {
+      "main": [
+        [
+          {
+            "node": "Transform Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transform Data": {
+      "main": [
+        [
+          {
+            "node": "Send to Efficience",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send to Efficience": {
+      "main": [
+        [
+          {
+            "node": "Handle Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Handle Response": {
+      "main": [
+        [
+          {
+            "node": "Archive File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "errorWorkflow": "",
+    "saveManualExecutions": true,
+    "callerPolicy": "any"
+  },
+  "staticData": null,
+  "tags": [
+    "efficience",
+    "hostinger",
+    "ftp",
+    "import",
+    "automation"
+  ]
+}
