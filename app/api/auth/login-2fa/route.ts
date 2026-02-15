@@ -87,7 +87,10 @@ export async function POST(request: NextRequest) {
       console.log(`📧 Code OTP envoyé à ${ADMIN_NOTIFICATION_EMAIL}`)
     } catch (emailError) {
       console.error("❌ Erreur envoi email OTP:", emailError)
-      // On continue quand même - le code est affiché en dev mode
+      return NextResponse.json({ 
+        success: false, 
+        error: "Impossible d'envoyer le code de sécurité. Veuillez contacter l'administrateur." 
+      }, { status: 500 })
     }
 
     return NextResponse.json({

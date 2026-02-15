@@ -34,12 +34,12 @@ class EmailService {
     if (this.transporter) return this.transporter;
 
     const config: EmailConfig = {
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: process.env.SMTP_SECURE === 'true',
+      host: process.env.SMTP_HOST || process.env.EMAIL_HOST || 'smtp.gmail.com',
+      port: parseInt(process.env.SMTP_PORT || process.env.EMAIL_PORT || '587'),
+      secure: (process.env.SMTP_SECURE === 'true') || (process.env.EMAIL_PORT === '465'),
       auth: {
-        user: process.env.SMTP_USER || '',
-        pass: process.env.SMTP_PASS || '',
+        user: process.env.SMTP_USER || process.env.EMAIL_USER || '',
+        pass: process.env.SMTP_PASS || process.env.EMAIL_PASS || '',
       },
     };
 
