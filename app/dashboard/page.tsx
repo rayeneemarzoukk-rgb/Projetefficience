@@ -134,8 +134,8 @@ export default function Dashboard() {
         </div>
         {/* Titre Dashboard Dentaire */}
         <div className="mb-8 text-center">
-          <h2 className="text-5xl font-extrabold text-slate-900">Dashboard Dentaire</h2>
-          <p className="text-lg text-slate-500 font-medium mt-2 tracking-wide">Cabinet Efficience Source</p>
+          <h2 className="text-5xl font-extrabold text-slate-900">Tableau de bord global</h2>
+          <p className="text-lg text-slate-500 font-medium mt-2 tracking-wide">Vue centrale des performances de tous les cabinets</p>
         </div>
         <div className="flex justify-end items-start">
           <button 
