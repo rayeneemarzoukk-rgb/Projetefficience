@@ -578,8 +578,15 @@ class AutomationScheduler {
   }
 }
 
-// Instance globale du scheduler
-const scheduler = new AutomationScheduler()
+// Instance lazy-loaded du scheduler (évite les problèmes pendant le build Vercel)
+let _scheduler: AutomationScheduler | null = null
+
+function getScheduler(): AutomationScheduler {
+  if (!_scheduler) {
+    _scheduler = new AutomationScheduler()
+  }
+  return _scheduler
+}
 
 export const dynamic = 'force-dynamic'
 
@@ -590,28 +597,28 @@ export async function POST(request: NextRequest) {
 
     switch (action) {
       case "start-job":
-        const started = scheduler.startJob(jobName)
+        const started = getScheduler().startJob(jobName)
         return NextResponse.json({
           success: started,
           message: started ? `Tâche ${jobName} démarrée` : `Tâche ${jobName} introuvable`,
         })
 
       case "stop-job":
-        const stopped = scheduler.stopJob(jobName)
+        const stopped = getScheduler().stopJob(jobName)
         return NextResponse.json({
           success: stopped,
           message: stopped ? `Tâche ${jobName} arrêtée` : `Tâche ${jobName} introuvable`,
         })
 
       case "start-all":
-        scheduler.startAllJobs()
+        getScheduler().startAllJobs()
         return NextResponse.json({
           success: true,
           message: "Toutes les tâches ont été démarrées",
         })
 
       case "stop-all":
-        scheduler.stopAllJobs()
+        getScheduler().stopAllJobs()
         return NextResponse.json({
           success: true,
           message: "Toutes les tâches ont été arrêtées",
@@ -621,19 +628,19 @@ export async function POST(request: NextRequest) {
         let result
         switch (jobName) {
           case "monthly-reports":
-            result = await scheduler.executeMonthlyReportsGeneration()
+            result = await getScheduler().executeMonthlyReportsGeneration()
             break
           case "monthly-emails":
-            result = await scheduler.executeMonthlyEmailSending()
+            result = await getScheduler().executeMonthlyEmailSending()
             break
           case "daily-import":
-            result = await scheduler.executeDailyDataImport()
+            result = await getScheduler().executeDailyDataImport()
             break
           case "alerts-check":
-            result = await scheduler.executeAlertsCheck()
+            result = await getScheduler().executeAlertsCheck()
             break
           case "cleanup":
-            result = await scheduler.executeCleanup()
+            result = await getScheduler().executeCleanup()
             break
           default:
             return NextResponse.json(
@@ -674,7 +681,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    const status = scheduler.getAllJobsStatus()
+    const status = getScheduler().getAllJobsStatus()
 
     return NextResponse.json({
       success: true,
@@ -698,7 +705,7 @@ export async function GET() {
 // Démarrer automatiquement toutes les tâches au lancement (uniquement hors build)
 if (process.env.NODE_ENV === "production" && process.env.NEXT_RUNTIME === "nodejs" && !process.env.NEXT_PHASE) {
   try {
-    // scheduler.startAllJobs()
+    // getScheduler().startAllJobs()
   } catch (e) {
     console.error("Erreur lors du démarrage automatique du scheduler:", e)
   }
