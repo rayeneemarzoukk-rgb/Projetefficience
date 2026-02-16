@@ -401,8 +401,10 @@ function KPICard({ title, value, icon, color }: any) {
 }
 
 function SynthesisCard({ icon, title, value, trend, bgColor }: any) {
-  return (
-    <div className={`${bgColor} p-6 rounded-2xl border-0`}>
+  // Rendre la carte cliquable si on fournit un href
+  const Link = require('next/link').default;
+  const content = (
+    <div className={`${bgColor} p-6 rounded-2xl border-0 cursor-pointer hover:shadow-lg transition-shadow`}>
       <div className="flex items-center gap-3 mb-3">
         {icon}
         <span className="text-sm font-semibold text-slate-700">{title}</span>
@@ -410,7 +412,16 @@ function SynthesisCard({ icon, title, value, trend, bgColor }: any) {
       <p className="text-3xl font-black text-slate-900 mb-1">{value}</p>
       <p className="text-xs text-slate-600">{trend}</p>
     </div>
-  )
+  );
+  if (bgColor === 'bg-blue-50') {
+    // Cabinets Suivis → /cabinets
+    return <Link href="/cabinets">{content}</Link>;
+  }
+  if (bgColor === 'bg-purple-50') {
+    // Rapports Générés → /rapports
+    return <Link href="/rapports">{content}</Link>;
+  }
+  return content;
 }
 
 function AlertBox({ title, count, trend, bgColor, textColor, icon, href }: any) {
