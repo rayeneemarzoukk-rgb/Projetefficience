@@ -6,8 +6,8 @@ async function main() {
   const setOp = "$set";
   const now = new Date().toLocaleDateString('fr-FR');
 
-  // Dr. Dubois - score 94, top performer
-  await col.updateOne({ nom: 'Dr. Dubois' }, { [setOp]: {
+  // Dr. Marzouk - score 94, top performer
+  await col.updateOne({ nom: 'Dr. Marzouk' }, { [setOp]: {
     id: 'cab-001',
     nouveauxPatients: 18,
     tauxAbsence: 3,

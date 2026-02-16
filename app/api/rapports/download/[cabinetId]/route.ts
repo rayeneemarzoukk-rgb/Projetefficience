@@ -47,7 +47,7 @@ export async function GET(
     const getCabinetStatut = () => {
       if (caActuel >= caObjectif) return "OK";
       if (caActuel >= caObjectif * 0.85) return "À suivre";
-      return "Alerte";
+      return "À surveiller";
     };
     
     const cabinetStatut = getCabinetStatut();

@@ -14,7 +14,7 @@ def get_statut(score):
     elif score >= 80:
         return "À surveiller"
     else:
-        return "Alerte"
+        return "À surveiller"
 
 for cab in db.cabinets.find():
     statut = get_statut(cab.get('score', 0))

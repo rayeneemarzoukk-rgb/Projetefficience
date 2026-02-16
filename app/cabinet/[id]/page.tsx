@@ -1,11 +1,10 @@
 "use client"
 
-import React, { useState } from "react"
+import React from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
-import { ChevronDown, Download, Mail } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 
 // Données mock pour un cabinet détaillé
 const cabinetDetail = {
@@ -456,14 +455,6 @@ export default function CabinetDetailPage() {
               </CardContent>
             </Card>
           </div>
-        </div>
-
-        {/* Boutons d'action */}
-        <div className="flex gap-4 mt-12 justify-center">
-          <Button className="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-full flex items-center gap-2 text-white">
-            <Download className="w-4 h-4" />
-            Générer rapport →
-          </Button>
         </div>
       </div>
     </div>

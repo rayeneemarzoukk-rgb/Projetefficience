@@ -14,11 +14,11 @@ const defaultStats = {
   progression: 99,
   rdvCount: 45,
   cabinets: [
-    { _id: '1', nom: 'Dr. Dubois', caActuel: 52000, caObjectif: 50000, score: 94, rapportStatut: 'sent' },
+    { _id: '1', nom: 'Dr. Marzouk', caActuel: 52000, caObjectif: 50000, score: 94, rapportStatut: 'sent' },
     { _id: '2', nom: 'Dr. Burnier', caActuel: 45000, caObjectif: 40000, score: 92, rapportStatut: 'sent' },
-    { _id: '3', nom: 'Dr. Laroche', caActuel: 38000, caObjectif: 40000, score: 88, rapportStatut: 'sent' },
+    { _id: '3', nom: 'Dr. Laroche', caActuel: 42000, caObjectif: 40000, score: 91, rapportStatut: 'pending' },
     { _id: '4', nom: 'Dr. Mocanu', caActuel: 45000, caObjectif: 45000, score: 87, rapportStatut: 'sent' },
-    { _id: '5', nom: 'Dr. Pinard', caActuel: 32000, caObjectif: 40000, score: 76, rapportStatut: 'sent' },
+    { _id: '5', nom: 'Dr. Pinard', caActuel: 41000, caObjectif: 40000, score: 90, rapportStatut: 'pending' },
   ],
   patients: [
     { _id: '1', name: 'Jean Dupont', email: 'jean@example.com' },

@@ -8,7 +8,7 @@ export function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const menuItems = [
-    { icon: LayoutDashboard, label: "Dashboard général", href: "/dashboard" },
+    { icon: LayoutDashboard, label: "Dashboard Dentaire", href: "/dashboard" },
     { icon: BarChart3, label: "Analyse des cabinets", href: "/analyses" },
     { icon: GitCompare, label: "Comparaison Cabinets", href: "/analyses/absences" },
     { icon: PieChart, label: "Gestion cabinets", href: "/cabinets" },

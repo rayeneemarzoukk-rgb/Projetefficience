@@ -9,8 +9,8 @@ export async function GET() {
   // Les 5 cabinets existants
   const cabinets = [
     {
-      cabinetNom: "Cabinet Dr. Dubois",
-      cabinetEmail: "dubois@cabinet.fr",
+      cabinetNom: "Cabinet Dr. Marzouk",
+      cabinetEmail: "marzouk@cabinet.fr",
       periode: "Février 2026",
       statistiques: {
         caActuel: 52000,

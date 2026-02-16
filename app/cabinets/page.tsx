@@ -12,8 +12,8 @@ import Link from "next/link"
 const cabinetsData = [
   {
     id: 1,
-    nom: "Cabinet Dr. Dubois",
-    email: "dubois@cabinet.fr",
+    nom: "Cabinet Dr. Marzouk",
+    email: "marzouk@cabinet.fr",
     score: 94,
     statut: "performant",
     ca: "52 000€",
@@ -38,13 +38,13 @@ const cabinetsData = [
     id: 3,
     nom: "Cabinet Dr. Laroche",
     email: "laroche@cabinet.fr",
-    score: 88,
-    statut: "surveiller",
-    ca: "38 000€",
+    score: 91,
+    statut: "performant",
+    ca: "42 000€",
     caObjectif: "40 000€",
-    trend: "-1%",
-    rapport: "Envoyé",
-    rapportStatut: "sent",
+    trend: "+5%",
+    rapport: "En attente",
+    rapportStatut: "pending",
   },
   {
     id: 4,
@@ -62,13 +62,13 @@ const cabinetsData = [
     id: 5,
     nom: "Cabinet Dr. Pinard",
     email: "pinard@cabinet.fr",
-    score: 76,
-    statut: "attention",
-    ca: "32 000€",
-    caObjectif: "35 000€",
-    trend: "-8%",
-    rapport: "Envoyé",
-    rapportStatut: "sent",
+    score: 90,
+    statut: "performant",
+    ca: "41 000€",
+    caObjectif: "40 000€",
+    trend: "+3%",
+    rapport: "En attente",
+    rapportStatut: "pending",
   },
 ]
 
@@ -88,7 +88,7 @@ export default function CabinetsPage() {
       case "surveiller":
         return "bg-yellow-500/20 text-yellow-400"
       case "attention":
-        return "bg-red-500/20 text-red-400"
+        return "bg-orange-500/20 text-orange-400"
       default:
         return "bg-slate-500/20 text-slate-400"
     }
@@ -111,7 +111,7 @@ export default function CabinetsPage() {
     { label: "Cabinets suivis", count: cabinetsData.length, icon: "📊", color: "text-blue-400" },
     { label: "Performants", count: cabinetsData.filter(c => c.statut === "performant").length, icon: "✅", color: "text-green-400" },
     { label: "À surveiller", count: cabinetsData.filter(c => c.statut === "surveiller").length, icon: "⚠️", color: "text-yellow-400" },
-    { label: "En attention", count: cabinetsData.filter(c => c.statut === "attention").length, icon: "🔴", color: "text-red-400" },
+    { label: "À vérifier", count: cabinetsData.filter(c => c.statut === "attention").length, icon: "👁️", color: "text-orange-400" },
   ]
 
   return (
@@ -264,7 +264,7 @@ export default function CabinetsPage() {
                       </td>
                       <td className="py-4 px-4">
                         <Badge className={getStatutColor(cabinet.statut)}>
-                          {cabinet.statut === "performant" ? "✓ OK" : cabinet.statut === "surveiller" ? "⚠ À suivre" : "🔴 Alerte"}
+                          {cabinet.statut === "performant" ? "✓ OK" : cabinet.statut === "surveiller" ? "⚠ À suivre" : "�️ À surveiller"}
                         </Badge>
                       </td>
                       <td className="py-4 px-4">

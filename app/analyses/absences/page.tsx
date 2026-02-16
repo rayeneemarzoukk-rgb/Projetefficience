@@ -12,7 +12,7 @@ import Link from "next/link"
 // Données des absences par cabinet
 const absencesParCabinet = [
   { 
-    nom: "Dr. Dubois", 
+    nom: "Dr. Marzouk", 
     totalRdv: 120, 
     presents: 112, 
     absents: 8, 
@@ -31,11 +31,11 @@ const absencesParCabinet = [
   },
   { 
     nom: "Dr. Laroche", 
-    totalRdv: 85, 
-    presents: 72, 
-    absents: 13, 
-    tauxAbsence: 15.3,
-    tendance: "hausse",
+    totalRdv: 95, 
+    presents: 89, 
+    absents: 6, 
+    tauxAbsence: 6.3,
+    tendance: "baisse",
     moisPrecedent: 10
   },
   { 
@@ -49,11 +49,11 @@ const absencesParCabinet = [
   },
   { 
     nom: "Dr. Pinard", 
-    totalRdv: 75, 
-    presents: 63, 
-    absents: 12, 
-    tauxAbsence: 16.0,
-    tendance: "hausse",
+    totalRdv: 88, 
+    presents: 82, 
+    absents: 6, 
+    tauxAbsence: 6.8,
+    tendance: "baisse",
     moisPrecedent: 8
   },
 ]
@@ -93,7 +93,7 @@ const raisonsAbsences = [
 // Répartition des raisons d'absence PAR CABINET
 const raisonsAbsencesParCabinet = [
   {
-    nom: "Dr. Dubois",
+    nom: "Dr. Marzouk",
     color: "#3b82f6",
     raisons: [
       { name: "Non justifiée", value: 25, color: "#ef4444" },
@@ -293,7 +293,7 @@ export default function AbsencesPage() {
                       </td>
                       <td className="text-center py-4 px-4">
                         {cabinet.tauxAbsence > 10 ? (
-                          <Badge variant="destructive">⚠️ Alerte</Badge>
+                          <Badge className="bg-orange-500">👁️ À surveiller</Badge>
                         ) : cabinet.tauxAbsence > 7 ? (
                           <Badge className="bg-orange-500">👁️ À surveiller</Badge>
                         ) : (

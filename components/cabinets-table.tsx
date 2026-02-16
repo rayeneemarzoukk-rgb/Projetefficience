@@ -12,9 +12,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 const cabinetsData = [
   {
     id: 1,
-    nom: "Cabinet Dr. Dubois",
+    nom: "Cabinet Dr. Marzouk",
     ville: "Paris",
-    email: "dubois@cabinet.fr",
+    email: "marzouk@cabinet.fr",
     dernierRapport: "2024-12-01",
     performance: 94,
     statut: "actif",
@@ -36,9 +36,9 @@ const cabinetsData = [
     ville: "Marseille",
     email: "laroche@cabinet.fr",
     dernierRapport: "2024-11-28",
-    performance: 88,
+    performance: 91,
     statut: "actif",
-    chiffreAffaires: 38000,
+    chiffreAffaires: 42000,
   },
   {
     id: 4,
@@ -56,9 +56,9 @@ const cabinetsData = [
     ville: "Toulouse",
     email: "pinard@cabinet.fr",
     dernierRapport: "2024-11-25",
-    performance: 76,
-    statut: "attention",
-    chiffreAffaires: 32000,
+    performance: 90,
+    statut: "actif",
+    chiffreAffaires: 41000,
   },
 ]
 

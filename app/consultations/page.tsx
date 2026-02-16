@@ -30,8 +30,8 @@ const consultationsData = [
   },
   {
     id: 2,
-    cabinet: "Cabinet Dr. Dubois",
-    email: "dubois@cabinet.fr",
+    cabinet: "Cabinet Dr. Marzouk",
+    email: "marzouk@cabinet.fr",
     consultations: 122,
     enregistrements: 112,
     analyseIA: "92%",
@@ -71,7 +71,7 @@ const consultationsData = [
 ]
 
 const detailConsultationsData = [
-  { date: "01/12", duree: "12m", type: "Consultation", intervenant: "Dr. Dubois", devis: "Oui", score: 85 },
+  { date: "01/12", duree: "12m", type: "Consultation", intervenant: "Dr. Marzouk", devis: "Oui", score: 85 },
   { date: "01/12", duree: "18m", type: "Soin", intervenant: "Dr Burnier", devis: "Non", score: 92 },
   { date: "02/12", duree: "15m", type: "Consultation", intervenant: "Dr Laroche", devis: "Oui", score: 78 },
   { date: "02/12", duree: "25m", type: "Chirurgie", intervenant: "Dr Mocanu", devis: "Oui", score: 88 },
@@ -96,7 +96,7 @@ const dataChartConsultations = [
 // Données patients enregistrés par cabinet
 const dataPatientsParCabinet = [
   { cabinet: "Bresden", patients: 130 },
-  { cabinet: "Dubois", patients: 112 },
+  { cabinet: "Marzouk", patients: 112 },
   { cabinet: "Laroche", patients: 97 },
   { cabinet: "Mocanu", patients: 85 },
   { cabinet: "Pinard", patients: 66 },

@@ -142,7 +142,7 @@ export class AuthService {
       {
         id: 3,
         email: "lyon@dentaire-plus.fr",
-        nom: "Dr. Dubois",
+        nom: "Dr. Marzouk",
         role: "user" as const,
         cabinetId: 2,
         cabinetNom: "Dentaire Plus Lyon",

@@ -461,14 +461,14 @@ export async function sendCabinetReportEmail(
   const getCabinetStatut = () => {
     if (data.statistiques.caActuel >= data.statistiques.caObjectif) return "OK";
     if (data.statistiques.caActuel >= data.statistiques.caObjectif * 0.85) return "À suivre";
-    return "Alerte";
+    return "À surveiller";
   };
   const cabinetStatut = getCabinetStatut();
   // Phrase personnalisée selon le statut
   const getStatutPhrase = () => {
     if (cabinetStatut === "OK") return "Félicitations, votre cabinet a atteint ses objectifs ce mois-ci !";
     if (cabinetStatut === "À suivre") return "Attention, votre cabinet est proche de l'objectif mais nécessite un suivi.";
-    return "Alerte : le chiffre d'affaires est loin de l'objectif, des actions sont recommandées.";
+    return "Attention : le chiffre d'affaires nécessite un suivi, des actions sont recommandées.";
   };
   const statutPhrase = getStatutPhrase();
   const destinataire = 'maarzoukrayan3@gmail.com';

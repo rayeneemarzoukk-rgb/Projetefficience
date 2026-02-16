@@ -15,11 +15,11 @@ const defaultData = {
   progression: 99,
   rdvCount: 45,
   cabinets: [
-    { _id: '1', nom: 'Dr. Dubois', caActuel: 52000, caObjectif: 50000, score: 94, rapportStatut: 'sent' },
+    { _id: '1', nom: 'Dr. Marzouk', caActuel: 52000, caObjectif: 50000, score: 94, rapportStatut: 'sent' },
     { _id: '2', nom: 'Dr. Burnier', caActuel: 45000, caObjectif: 40000, score: 92, rapportStatut: 'sent' },
-    { _id: '3', nom: 'Dr. Laroche', caActuel: 38000, caObjectif: 40000, score: 88, rapportStatut: 'sent' },
+    { _id: '3', nom: 'Dr. Laroche', caActuel: 42000, caObjectif: 40000, score: 91, rapportStatut: 'pending' },
     { _id: '4', nom: 'Dr. Mocanu', caActuel: 45000, caObjectif: 45000, score: 87, rapportStatut: 'sent' },
-    { _id: '5', nom: 'Dr. Pinard', caActuel: 32000, caObjectif: 40000, score: 76, rapportStatut: 'sent' },
+    { _id: '5', nom: 'Dr. Pinard', caActuel: 41000, caObjectif: 40000, score: 90, rapportStatut: 'pending' },
   ],
   patients: [],
   rendezvous: [],
@@ -115,9 +115,10 @@ export default function Dashboard() {
   }));
 
   const pieData = [
-    { name: 'Bon', value: (filteredCabinetData || []).filter((c: any) => c?.score >= 85).length, fill: '#10b981' },
+    { name: 'Excellent', value: (filteredCabinetData || []).filter((c: any) => c?.score >= 90).length, fill: '#059669' },
+    { name: 'Bon', value: (filteredCabinetData || []).filter((c: any) => c?.score >= 85 && c?.score < 90).length, fill: '#10b981' },
     { name: 'Moyen', value: (filteredCabinetData || []).filter((c: any) => c?.score >= 75 && c?.score < 85).length, fill: '#f59e0b' },
-    { name: 'Faible', value: (filteredCabinetData || []).filter((c: any) => c?.score < 75).length, fill: '#ef4444' },
+    { name: 'À améliorer', value: (filteredCabinetData || []).filter((c: any) => c?.score < 75).length, fill: '#ef4444' },
   ];
 
   const today = new Date();
@@ -131,9 +132,9 @@ export default function Dashboard() {
         <div className="flex flex-col gap-2 mb-6">
           <h1 className="text-3xl font-bold text-blue-700">Bonjour Younis</h1>
         </div>
-        {/* Titre Tableau de bord */}
+        {/* Titre Dashboard Dentaire */}
         <div className="mb-8 text-center">
-          <h2 className="text-5xl font-extrabold text-slate-900">Tableau de bord</h2>
+          <h2 className="text-5xl font-extrabold text-slate-900">Dashboard Dentaire</h2>
           <p className="text-lg text-slate-500 font-medium mt-2 tracking-wide">Cabinet Efficience Source</p>
         </div>
         <div className="flex justify-end items-start">
@@ -210,31 +211,112 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          {/* Répartition des Scores */}
+          {/* Répartition des Scores - Enrichi */}
           <Card className="bg-white rounded-3xl border-0 shadow-sm">
             <CardHeader>
-              <CardTitle className="text-lg font-bold text-slate-900">Répartition des Scores</CardTitle>
+              <CardTitle className="text-lg font-bold text-slate-900">Répartition des Scores par Performance</CardTitle>
             </CardHeader>
-            <CardContent className="flex justify-center">
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={80}
-                    outerRadius={110}
-                    paddingAngle={2}
-                    dataKey="value"
-                  >
-                    {pieData.map((entry: any, index: number) => (
-                      <Cell key={`cell-${index}`} fill={entry.fill} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
+            <CardContent>
+              <div className="flex flex-col lg:flex-row items-center gap-6">
+                {/* Graphique Pie */}
+                <div className="relative">
+                  <ResponsiveContainer width={280} height={280}>
+                    <PieChart>
+                      <Pie
+                        data={pieData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={70}
+                        outerRadius={100}
+                        paddingAngle={3}
+                        dataKey="value"
+                        label={({ name, value, percent }) => value > 0 ? `${(percent * 100).toFixed(0)}%` : ''}
+                        labelLine={false}
+                      >
+                        {pieData.map((entry: any, index: number) => (
+                          <Cell key={`cell-${index}`} fill={entry.fill} />
+                        ))}
+                      </Pie>
+                      <Tooltip 
+                        formatter={(value: number, name: string) => [`${value} cabinet${value > 1 ? 's' : ''}`, name]}
+                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  {/* Centre du donut - Score moyen */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                    <span className="text-3xl font-bold text-slate-800">{performanceMoyenne}</span>
+                    <span className="text-xs text-slate-500">Score moyen</span>
+                  </div>
+                </div>
+                
+                {/* Détails par catégorie */}
+                <div className="flex-1 space-y-3 w-full">
+                  {/* Excellent (≥90) */}
+                  <div className="flex items-center justify-between p-3 bg-emerald-50 rounded-xl">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
+                      <div>
+                        <p className="font-semibold text-emerald-700">Excellent (≥90)</p>
+                        <p className="text-xs text-emerald-600">
+                          {(filteredCabinetData || []).filter((c: any) => c?.score >= 90).map((c: any) => extractShortName(c?.nom)).join(', ') || 'Aucun'}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-lg font-bold text-emerald-700">
+                      {(filteredCabinetData || []).filter((c: any) => c?.score >= 90).length}
+                    </span>
+                  </div>
+                  
+                  {/* Bon (85-89) */}
+                  <div className="flex items-center justify-between p-3 bg-green-50 rounded-xl">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                      <div>
+                        <p className="font-semibold text-green-700">Bon (85-89)</p>
+                        <p className="text-xs text-green-600">
+                          {(filteredCabinetData || []).filter((c: any) => c?.score >= 85 && c?.score < 90).map((c: any) => extractShortName(c?.nom)).join(', ') || 'Aucun'}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-lg font-bold text-green-700">
+                      {(filteredCabinetData || []).filter((c: any) => c?.score >= 85 && c?.score < 90).length}
+                    </span>
+                  </div>
+                  
+                  {/* Moyen (75-84) */}
+                  <div className="flex items-center justify-between p-3 bg-amber-50 rounded-xl">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                      <div>
+                        <p className="font-semibold text-amber-700">Moyen (75-84)</p>
+                        <p className="text-xs text-amber-600">
+                          {(filteredCabinetData || []).filter((c: any) => c?.score >= 75 && c?.score < 85).map((c: any) => extractShortName(c?.nom)).join(', ') || 'Aucun'}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-lg font-bold text-amber-700">
+                      {(filteredCabinetData || []).filter((c: any) => c?.score >= 75 && c?.score < 85).length}
+                    </span>
+                  </div>
+                  
+                  {/* Faible (<75) */}
+                  <div className="flex items-center justify-between p-3 bg-red-50 rounded-xl">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                      <div>
+                        <p className="font-semibold text-red-700">À améliorer (&lt;75)</p>
+                        <p className="text-xs text-red-600">
+                          {(filteredCabinetData || []).filter((c: any) => c?.score < 75).map((c: any) => extractShortName(c?.nom)).join(', ') || 'Aucun'}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-lg font-bold text-red-700">
+                      {(filteredCabinetData || []).filter((c: any) => c?.score < 75).length}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>

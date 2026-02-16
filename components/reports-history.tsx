@@ -9,7 +9,7 @@ import { Download, Eye, Mail } from "lucide-react"
 const reportsData = [
   {
     id: 1,
-    cabinet: "Cabinet Dr. Dubois",
+    cabinet: "Cabinet Dr. Marzouk",
     dateGeneration: "2024-12-01",
     periode: "Novembre 2024",
     statut: "envoyé",
@@ -30,7 +30,7 @@ const reportsData = [
     cabinet: "Cabinet Dr. Laroche",
     dateGeneration: "2024-11-28",
     periode: "Novembre 2024",
-    statut: "généré",
+    statut: "en attente",
     taille: "1.8 MB",
     emailEnvoye: false,
   },
@@ -48,9 +48,9 @@ const reportsData = [
     cabinet: "Cabinet Dr. Pinard",
     dateGeneration: "2024-11-25",
     periode: "Novembre 2024",
-    statut: "envoyé",
+    statut: "en attente",
     taille: "1.9 MB",
-    emailEnvoye: true,
+    emailEnvoye: false,
   },
 ]
 
@@ -61,6 +61,8 @@ export function ReportsHistory() {
         return <Badge className="bg-green-100 text-green-800">Envoyé</Badge>
       case "généré":
         return <Badge className="bg-blue-100 text-blue-800">Généré</Badge>
+      case "en attente":
+        return <Badge className="bg-yellow-100 text-yellow-800">En attente</Badge>
       case "erreur":
         return <Badge className="bg-red-100 text-red-800">Erreur</Badge>
       default:

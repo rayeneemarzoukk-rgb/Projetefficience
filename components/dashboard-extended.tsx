@@ -17,11 +17,11 @@ const dashboardMetrics = {
 }
 
 const performanceData = [
-  { cabinet: "Dr. Dubois", score: 94 },
+  { cabinet: "Dr. Marzouk", score: 94 },
   { cabinet: "Dr Burnier", score: 92 },
-  { cabinet: "Dr Laroche", score: 88 },
+  { cabinet: "Dr Laroche", score: 91 },
   { cabinet: "Dr Mocanu", score: 87 },
-  { cabinet: "Dr Pinard", score: 76 },
+  { cabinet: "Dr Pinard", score: 90 },
 ]
 
 const caEvolutionData = [

@@ -49,7 +49,7 @@ export default function ReportGenerator({ cabinet, patients, globalStats }: Repo
   const getCabinetStatut = () => {
     if (caActuel >= caObjectif) return "OK";
     if (caActuel >= caObjectif * 0.85) return "À suivre";
-    return "Alerte";
+    return "À surveiller";
   };
 
   const getStatutDetails = (statut: string) => {
@@ -58,8 +58,8 @@ export default function ReportGenerator({ cabinet, patients, globalStats }: Repo
         return { color: "#10b981", bgColor: "#d1fae5", icon: "✅", message: "Objectif atteint" };
       case "À suivre":
         return { color: "#f59e0b", bgColor: "#fef3c7", icon: "⚠️", message: "Vérification requise" };
-      case "Alerte":
-        return { color: "#ef4444", bgColor: "#fee2e2", icon: "🔴", message: "Actions urgentes" };
+      case "À surveiller":
+        return { color: "#f59e0b", bgColor: "#fef3c7", icon: "👁️", message: "À surveiller" };
       default:
         return { color: "#64748b", bgColor: "#f1f5f9", icon: "❓", message: "Inconnu" };
     }
@@ -82,7 +82,7 @@ export default function ReportGenerator({ cabinet, patients, globalStats }: Repo
   const getStatutPhrase = () => {
     if (cabinetStatut === "OK") return "Félicitations, votre cabinet a atteint ses objectifs ce mois-ci !";
     if (cabinetStatut === "À suivre") return "Attention, votre cabinet est proche de l'objectif mais nécessite un suivi.";
-    return "Alerte : le chiffre d'affaires est loin de l'objectif, des actions sont recommandées.";
+    return "Attention : le chiffre d'affaires nécessite un suivi, des actions sont recommandées.";
   };
 
   const getTendanceColor = (ecart: number) => {

@@ -175,7 +175,7 @@ $body = @{
             "revenus" = 35000
         },
         @{
-            "praticien" = "Dr. Dubois"
+            "praticien" = "Dr. Marzouk"
             "periode" = "2026-01"
             "heures" = 140
             "actes" = 180
@@ -221,7 +221,7 @@ $body = @{
             "patientNom" = "Marie Martin"
             "date" = "2026-02-15"
             "heure" = "09:30"
-            "praticien" = "Dr. Dubois"
+            "praticien" = "Dr. Marzouk"
             "type" = "DÉTARTRAGE"
             "duree" = 45
         }

@@ -49,14 +49,14 @@ export async function GET(
     const getCabinetStatut = () => {
       if (caActuel >= caObjectif) return "OK";
       if (caActuel >= caObjectif * 0.85) return "À suivre";
-      return "Alerte";
+      return "À surveiller";
     };
 
     const getStatutPhrase = () => {
       const stat = getCabinetStatut();
       if (stat === "OK") return "Félicitations, votre cabinet a atteint ses objectifs ce mois-ci !";
       if (stat === "À suivre") return "Attention, votre cabinet est proche de l'objectif mais nécessite un suivi.";
-      return "Alerte : le chiffre d'affaires est loin de l'objectif, des actions sont recommandées.";
+      return "Attention : le chiffre d'affaires nécessite un suivi, des actions sont recommandées.";
     };
     
     const cabinetStatut = getCabinetStatut();

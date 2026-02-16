@@ -7,7 +7,7 @@ import mongoose from 'mongoose';
 function calculateCabinetStatut(caActuel: number, caObjectif: number): string {
   if (caActuel >= caObjectif) return "OK";
   if (caActuel >= caObjectif * 0.85) return "À suivre";
-  return "Alerte";
+  return "À surveiller";
 }
 
 // API pour les rapports - Récupère les vrais données MongoDB

@@ -8,18 +8,18 @@ import { ChevronDown } from "lucide-react"
 
 // Données mock pour les analyses globales
 const dataCAMoyenParCabinet = [
-  { month: "Jan", "Dr. Dubois": 12, "Dr Burnier": 10, "Dr Laroche": 9, "Dr Mocanu": 8, "Dr Pinard": 13 },
-  { month: "Feb", "Dr. Dubois": 14, "Dr Burnier": 12, "Dr Laroche": 11, "Dr Mocanu": 10, "Dr Pinard": 15 },
-  { month: "Mar", "Dr. Dubois": 16, "Dr Burnier": 14, "Dr Laroche": 13, "Dr Mocanu": 12, "Dr Pinard": 17 },
-  { month: "Apr", "Dr. Dubois": 18, "Dr Burnier": 16, "Dr Laroche": 15, "Dr Mocanu": 14, "Dr Pinard": 19 },
-  { month: "May", "Dr. Dubois": 20, "Dr Burnier": 18, "Dr Laroche": 17, "Dr Mocanu": 16, "Dr Pinard": 21 },
-  { month: "Jun", "Dr. Dubois": 22, "Dr Burnier": 20, "Dr Laroche": 19, "Dr Mocanu": 18, "Dr Pinard": 23 },
-  { month: "Jul", "Dr. Dubois": 21, "Dr Burnier": 19, "Dr Laroche": 18, "Dr Mocanu": 17, "Dr Pinard": 22 },
-  { month: "Aug", "Dr. Dubois": 19, "Dr Burnier": 17, "Dr Laroche": 16, "Dr Mocanu": 15, "Dr Pinard": 20 },
-  { month: "Sep", "Dr. Dubois": 23, "Dr Burnier": 21, "Dr Laroche": 20, "Dr Mocanu": 19, "Dr Pinard": 24 },
-  { month: "Oct", "Dr. Dubois": 24, "Dr Burnier": 22, "Dr Laroche": 21, "Dr Mocanu": 20, "Dr Pinard": 25 },
-  { month: "Nov", "Dr. Dubois": 22, "Dr Burnier": 20, "Dr Laroche": 19, "Dr Mocanu": 18, "Dr Pinard": 23 },
-  { month: "Dec", "Dr. Dubois": 20, "Dr Burnier": 18, "Dr Laroche": 17, "Dr Mocanu": 16, "Dr Pinard": 21 },
+  { month: "Jan", "Dr. Marzouk": 12, "Dr Burnier": 10, "Dr Laroche": 9, "Dr Mocanu": 8, "Dr Pinard": 13 },
+  { month: "Feb", "Dr. Marzouk": 14, "Dr Burnier": 12, "Dr Laroche": 11, "Dr Mocanu": 10, "Dr Pinard": 15 },
+  { month: "Mar", "Dr. Marzouk": 16, "Dr Burnier": 14, "Dr Laroche": 13, "Dr Mocanu": 12, "Dr Pinard": 17 },
+  { month: "Apr", "Dr. Marzouk": 18, "Dr Burnier": 16, "Dr Laroche": 15, "Dr Mocanu": 14, "Dr Pinard": 19 },
+  { month: "May", "Dr. Marzouk": 20, "Dr Burnier": 18, "Dr Laroche": 17, "Dr Mocanu": 16, "Dr Pinard": 21 },
+  { month: "Jun", "Dr. Marzouk": 22, "Dr Burnier": 20, "Dr Laroche": 19, "Dr Mocanu": 18, "Dr Pinard": 23 },
+  { month: "Jul", "Dr. Marzouk": 21, "Dr Burnier": 19, "Dr Laroche": 18, "Dr Mocanu": 17, "Dr Pinard": 22 },
+  { month: "Aug", "Dr. Marzouk": 19, "Dr Burnier": 17, "Dr Laroche": 16, "Dr Mocanu": 15, "Dr Pinard": 20 },
+  { month: "Sep", "Dr. Marzouk": 23, "Dr Burnier": 21, "Dr Laroche": 20, "Dr Mocanu": 19, "Dr Pinard": 24 },
+  { month: "Oct", "Dr. Marzouk": 24, "Dr Burnier": 22, "Dr Laroche": 21, "Dr Mocanu": 20, "Dr Pinard": 25 },
+  { month: "Nov", "Dr. Marzouk": 22, "Dr Burnier": 20, "Dr Laroche": 19, "Dr Mocanu": 18, "Dr Pinard": 23 },
+  { month: "Dec", "Dr. Marzouk": 20, "Dr Burnier": 18, "Dr Laroche": 17, "Dr Mocanu": 16, "Dr Pinard": 21 },
 ]
 
 const dataRepartitionScores = [
@@ -29,7 +29,7 @@ const dataRepartitionScores = [
 ]
 
 const dataNouveauPatient = [
-  { cabinet: "Dr. Dubois", traites: 145, existants: 280 },
+  { cabinet: "Dr. Marzouk", traites: 145, existants: 280 },
   { cabinet: "Dr. Burnier", traites: 122, existants: 245 },
   { cabinet: "Dr. Laroche", traites: 110, existants: 210 },
   { cabinet: "Dr. Mocanu", traites: 98, existants: 185 },
@@ -38,7 +38,7 @@ const dataNouveauPatient = [
 
 // Données pour consultations par cabinet
 const dataConsultationsParCabinet = [
-  { cabinet: "Dr. Dubois", consultations: 145, heuresTravaillees: 160 },
+  { cabinet: "Dr. Marzouk", consultations: 145, heuresTravaillees: 160 },
   { cabinet: "Dr. Burnier", consultations: 122, heuresTravaillees: 148 },
   { cabinet: "Dr. Laroche", consultations: 110, heuresTravaillees: 140 },
   { cabinet: "Dr. Mocanu", consultations: 98, heuresTravaillees: 135 },
@@ -61,11 +61,11 @@ const dataCAHoraires = [
 ]
 
 const scoringData = [
-  { nom: "Dr. Dubois", score: 94 },
+  { nom: "Dr. Marzouk", score: 94 },
   { nom: "Dr Burnier", score: 92 },
-  { nom: "Dr Laroche", score: 88 },
+  { nom: "Dr Laroche", score: 91 },
   { nom: "Dr Mocanu", score: 87 },
-  { nom: "Dr Pinard", score: 76 },
+  { nom: "Dr Pinard", score: 90 },
 ]
 
 export default function AnalysesPage() {
@@ -144,7 +144,7 @@ export default function AnalysesPage() {
           <Card className="bg-white border border-slate-200 rounded-2xl shadow-sm">
             <CardContent className="p-6 text-center">
               <div className="text-3xl font-bold text-blue-600 mb-2">94%</div>
-              <p className="text-sm text-slate-600 font-semibold">Dr. Dubois</p>
+              <p className="text-sm text-slate-600 font-semibold">Dr. Marzouk</p>
             </CardContent>
           </Card>
           <Card className="bg-white border border-slate-200 rounded-2xl shadow-sm">
@@ -199,7 +199,7 @@ export default function AnalysesPage() {
                     formatter={(value) => [`${value}k€`, '']}
                   />
                   <Legend wrapperStyle={{ paddingTop: "20px" }} />
-                  <Line type="monotone" dataKey="Dr. Dubois" stroke="#3b82f6" strokeWidth={2.5} connectNulls dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                  <Line type="monotone" dataKey="Dr. Marzouk" stroke="#3b82f6" strokeWidth={2.5} connectNulls dot={{ r: 4 }} activeDot={{ r: 6 }} />
                   <Line type="monotone" dataKey="Dr Burnier" stroke="#10b981" strokeWidth={2.5} connectNulls dot={{ r: 4 }} activeDot={{ r: 6 }} />
                   <Line type="monotone" dataKey="Dr Laroche" stroke="#f59e0b" strokeWidth={2.5} connectNulls dot={{ r: 4 }} activeDot={{ r: 6 }} />
                   <Line type="monotone" dataKey="Dr Mocanu" stroke="#8b5cf6" strokeWidth={2.5} connectNulls dot={{ r: 4 }} activeDot={{ r: 6 }} />
@@ -209,7 +209,7 @@ export default function AnalysesPage() {
               <div className="mt-6 grid grid-cols-5 gap-2 text-center text-xs">
                 <div className="bg-blue-50 p-2 rounded-lg">
                   <p className="text-blue-600 font-bold">52k€</p>
-                  <p className="text-slate-600">Dr. Dubois</p>
+                  <p className="text-slate-600">Dr. Marzouk</p>
                 </div>
                 <div className="bg-green-50 p-2 rounded-lg">
                   <p className="text-green-600 font-bold">45k€</p>
