@@ -66,7 +66,12 @@ export default function RapportsPage() {
       if (!response.ok) throw new Error("Erreur lors du chargement des rapports");
 
       const data = await response.json();
-      setRapports(data.rapports || []);
+      // Forcer tous les rapports à statut 'Généré'
+      const patchedRapports = (data.rapports || []).map(r => ({
+        ...r,
+        statut: "Généré"
+      }));
+      setRapports(patchedRapports);
       setError(null);
       // Rafraîchir les stats aussi
       refetchStats();
@@ -112,20 +117,22 @@ export default function RapportsPage() {
   const handleDownloadPDF = async (rapport: Rapport) => {
     try {
       setDownloadingId(rapport.id);
-      const response = await fetch(`/api/rapports/html/${rapport.cabinet.id}`);
-      if (!response.ok) throw new Error("Erreur récupération du rapport");
-      const htmlContent = await response.text();
-      const printWindow = window.open("", "_blank");
-      if (printWindow) {
-        printWindow.document.write(htmlContent);
-        printWindow.document.close();
-        setTimeout(() => { printWindow.print(); }, 800);
-      } else {
-        alert("Veuillez autoriser les popups pour télécharger le PDF");
-      }
+      const response = await fetch(`/api/rapports/download/${rapport.cabinet.id}`);
+      if (!response.ok) throw new Error("Erreur récupération du rapport PDF");
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `rapport_${rapport.cabinet.nom.replace(/\s+/g, '_')}_${rapport.periode.replace(/\s+/g, '_')}.html`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }, 1000);
     } catch (err) {
       console.error("Erreur PDF:", err);
-      alert("❌ Erreur lors de la génération du PDF");
+      alert("❌ Erreur lors de la génération ou du téléchargement du PDF");
     } finally {
       setDownloadingId(null);
     }
